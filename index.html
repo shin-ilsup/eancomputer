@@ -186,6 +186,31 @@
 .sq-order-actions .btn.is-disabled { opacity: .45; cursor: not-allowed; }
 .sq-order-actions .btn.is-disabled:hover { transform: none; }
 .sq-order-card .result-hint { color: #9fb6dc; }
+.sq-send-notice {
+  margin-top: 12px; padding: 13px 14px 12px; border-radius: 12px; text-align: left;
+  background: #fff8e6; border: 2px solid #f5b731; box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+}
+.sq-send-notice[hidden] { display: none; }
+.sq-send-notice strong.sq-send-notice-title {
+  display: block; font-size: 14.5px; font-weight: 800; color: #8a5200; letter-spacing: -.02em; margin-bottom: 6px;
+}
+.sq-send-notice p { font-size: 13px; line-height: 1.68; color: #4a3608; margin: 0; }
+.sq-send-notice a { color: #0b57d0; font-weight: 800; text-decoration: underline; }
+.sq-send-notice-again {
+  margin-top: 9px; padding: 7px 12px; border-radius: 9px; border: 1px solid #d99a13;
+  background: #fff; color: #8a5200; font-family: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer;
+}
+.sq-send-notice-again:hover { background: #ffefc2; }
+.sq-pc-tip { margin-top: 10px; font-size: 12.3px; line-height: 1.62; color: #ffd98a; }
+.sq-pc-tip[hidden] { display: none; }
+.sq-send-notice.is-ok { background: #e8fbf1; border-color: #2fb673; }
+.sq-send-notice.is-ok strong.sq-send-notice-title { color: #0a6b3f; }
+.sq-send-notice.is-ok p { color: #16512f; }
+.sq-send-notice.is-ok a { color: #0b57d0; }
+.sq-send-notice.is-busy { background: #eaf2ff; border-color: #6b9be8; }
+.sq-send-notice.is-busy strong.sq-send-notice-title { color: #1a3d78; }
+.sq-send-notice.is-busy p { color: #1f3557; }
+.sq-order-actions .btn.is-busy { opacity: .8; cursor: progress; }
 
 @media (max-width: 1080px) {
   .sq-layout { grid-template-columns: 1fr; }
@@ -679,10 +704,17 @@
             </div>
             <pre class="result-text" id="soText">성함과 연락처를 입력하고 [주문서 만들기]를 누르면,
 선택하신 부품과 총 금액이 담긴 주문서가 여기에 만들어집니다.</pre>            <div class="sq-order-actions">
-              <a class="btn btn-primary is-disabled" id="soSms" href="sms:01090924849" aria-disabled="true">주문서 전송하기 (문자)</a>
+              <button class="btn btn-primary is-disabled" type="button" id="soSend" aria-disabled="true">주문서 바로 접수하기 (메일 전송)</button>
+              <a class="btn btn-ghost is-disabled" id="soSms" href="sms:01090924849" aria-disabled="true">주문서 전송하기 (문자)</a>
               <a class="btn btn-ghost is-disabled" id="soMail" href="mailto:evrc130@naver.com" aria-disabled="true">이메일로 주문서 보내기</a>
               <button class="btn btn-ghost is-disabled" type="button" id="soCopy" aria-disabled="true">주문서 복사</button>
             </div>
+            <div class="sq-send-notice" id="soSendNotice" role="status" aria-live="polite" hidden>
+              <strong class="sq-send-notice-title" id="soSendNoticeTitle">주문서를 복사했습니다!</strong>
+              <p id="soSendNoticeBody"></p>
+              <button type="button" class="sq-send-notice-again" id="soSendNoticeAgain" hidden>주문서 다시 복사</button>
+            </div>
+            <p class="sq-pc-tip" id="soPcTip" hidden>PC에서는 [주문서 바로 접수하기 (메일 전송)]를 누르면 주문서가 사장님 메일로 바로 접수됩니다. 문자·메일 앱이 열리지 않는 환경에서는 [주문서 전송하기(문자)]를 누르면 주문서가 클립보드에 복사되니 카카오톡·네이버톡톡에 붙여넣기(Ctrl+V)하세요.</p>
             <p class="result-hint" id="soHint">문자·이메일 중 편한 방법으로 보내주시면 됩니다.</p>
           </aside>
         </div>
@@ -785,6 +817,10 @@
     var orderEl = $("sqOrder"), orderForm = $("sqOrderForm"), orderBtn = $("sqOrderBtn"), orderClose = $("sqOrderClose");
     var soText = $("soText"), soBadge = $("soBadge"), soSms = $("soSms"), soMail = $("soMail"), soCopy = $("soCopy"), soHint = $("soHint"), soError = $("soError");
     var soGlance = $("soGlance"), soGlanceName = $("soGlanceName"), soGlanceSum = $("soGlanceSum");
+    var IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var soSend = $("soSend");
+    var soSendNotice = $("soSendNotice"), soSendNoticeTitle = $("soSendNoticeTitle"),
+        soSendNoticeBody = $("soSendNoticeBody"), soSendNoticeAgain = $("soSendNoticeAgain"), soPcTip = $("soPcTip");
 
     function byId(cat, id) {
       var list = PARTS[cat];
@@ -1011,7 +1047,7 @@
     }
 
     function setOrderReady(ready) {
-      [soSms, soMail, soCopy].forEach(function (btn) {
+      [soSend, soSms, soMail, soCopy].forEach(function (btn) {
         if (!btn) return;
         btn.classList.toggle("is-disabled", !ready);
         btn.setAttribute("aria-disabled", ready ? "false" : "true");
@@ -1030,6 +1066,7 @@
       if (soSms) soSms.href = "sms:" + STORE.mobile + "?body=" + encodeURIComponent(text);
       if (soMail) soMail.href = "mailto:" + STORE.mail + "?subject=" + encodeURIComponent("[조립PC 주문서] " + val("soName").trim() + " · " + badge) + "&body=" + encodeURIComponent(text);
       if (announce && soHint) soHint.textContent = "주문서가 만들어졌습니다. [주문서 전송하기(문자)] 또는 [이메일로 주문서 보내기]로 보내주세요.";
+      if (soSendNotice) soSendNotice.hidden = true;
     }
 
     function submitOrder(e) {
@@ -1058,6 +1095,212 @@
       orderForm.addEventListener("change", function () { if (orderBuilt) refreshOrder(false); });
     }
 
+    /* ── PC에서는 sms:·mailto: 가 열리지 않으므로 주문서를 복사해 안내한다 ── */
+    function legacyCopy(text) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      ta.style.left = "-1000px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      var ok = false;
+      try {
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        ok = document.execCommand("copy");
+      } catch (err) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function copyToClipboard(text) {
+      return new Promise(function (resolve) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(
+            function () { resolve(true); },
+            function () { resolve(legacyCopy(text)); }
+          );
+        } else {
+          resolve(legacyCopy(text));
+        }
+      });
+    }
+
+    function notice(level, title, bodyHtml, again) {
+      if (!soSendNotice) return;
+      soSendNotice.className = "sq-send-notice" + (level ? " is-" + level : "");
+      if (soSendNoticeTitle) soSendNoticeTitle.textContent = title;
+      if (soSendNoticeBody) soSendNoticeBody.innerHTML = bodyHtml;
+      soSendNotice.hidden = false;
+      if (soSendNoticeAgain) soSendNoticeAgain.hidden = !again;
+    }
+
+    function mailLink() { return '<a href="mailto:' + STORE.mail + '">' + STORE.mail + '</a>'; }
+    function phoneLink() { return '<a href="tel:' + STORE.phone + '">' + STORE.phone + '</a>'; }
+
+    function showSendNotice(kind, copied) {
+      if (!soSendNotice) return;
+      var title = copied ? "주문서를 복사했습니다!" : "주문서 복사가 안 되면 이렇게 보내주세요";
+      var body;
+      if (kind === "mail") {
+        body = copied
+          ? "메일 앱이 열리지 않았다면 방금 복사된 주문서를 " + mailLink() + " 으로 붙여넣기(Ctrl+V)해 보내주세요. 카카오톡·네이버톡톡으로 보내셔도 됩니다."
+          : "메일 앱이 열리지 않는다면 위 주문서를 직접 선택해 복사(Ctrl+C)한 뒤 " + mailLink() + " 으로 보내주시거나 " + phoneLink() + " 로 전화 주세요.";
+      } else {
+        body = copied
+          ? "PC에서는 문자 앱이 바로 열리지 않아 주문서를 복사해 드렸습니다! 카카오톡·네이버톡톡 또는 메일(" + mailLink() + ")에 붙여넣기(Ctrl+V)하시거나 " + phoneLink() + " 로 연락 주세요."
+          : "PC에서는 문자 앱이 바로 열리지 않습니다. 위 주문서를 직접 선택해 복사(Ctrl+C)한 뒤 카카오톡·메일로 보내주시거나 " + phoneLink() + "로 전화 주세요.";
+      }
+      notice("", title, "<p>" + body + "</p>", copied);
+      if (soHint) soHint.textContent = copied
+        ? "주문서가 클립보드에 복사되었습니다. Ctrl+V로 붙여넣기 하세요."
+        : "위 주문서를 직접 선택해 복사해 주세요.";
+    }
+
+    /* ── FormSubmit 메일 접수 (https://formsubmit.co/ajax/evrc130@naver.com) ──
+       성공 판단은 반드시 data.success === "true" 로 한다. FormSubmit은 거절·미인증에도
+       HTTP 200 과 { success: "false", message: ... } 를 돌려주므로 res.ok 로는 판단할 수 없다. */
+    var FORM_ENDPOINT = "https://formsubmit.co/ajax/" + STORE.mail;
+    var SEND_LABEL = "주문서 바로 접수하기 (메일 전송)";
+    var sendBusy = false;
+
+    function setSendBusy(busy) {
+      sendBusy = busy;
+      if (!soSend) return;
+      soSend.textContent = busy ? "접수 중..." : SEND_LABEL;
+      soSend.disabled = !!busy;
+      soSend.classList.toggle("is-busy", busy);
+      soSend.classList.toggle("is-disabled", busy ? true : !orderBuilt);
+      soSend.setAttribute("aria-busy", busy ? "true" : "false");
+      soSend.setAttribute("aria-disabled", busy ? "true" : (orderBuilt ? "false" : "true"));
+    }
+
+    function orderPayload() {
+      var rows = selectedRows();
+      var t = totals();
+      var name = val("soName").trim();
+      var deliveryEl = orderForm.querySelector('input[name="soDelivery"]:checked');
+      var payEl = orderForm.querySelector('input[name="soPay"]:checked');
+      return {
+        _subject: "[이안컴퓨터 가좌점] 조립PC 셀프견적 주문서 - " + name,
+        "성함": name,
+        "연락처": val("soPhone").trim(),
+        "수령방식": deliveryEl ? deliveryEl.value : "매장 방문 수령",
+        "결제방식": payEl ? payEl.value : "매장 방문 결제(카드·지역화폐·온누리상품권)",
+        "조합": badge,
+        "총견적": fmt(t.total),
+        "주문내용": buildOrderText(),
+        _template: "table"
+      };
+    }
+
+    function orderFallbackNotice(copied, reason) {
+      var title = copied ? "자동 접수가 되지 않아 주문서를 복사했습니다" : "자동 접수가 되지 않았습니다";
+      var body = copied
+        ? "<p>이메일 앱 또는 " + phoneLink() + "로 직접 연락 주세요. 방금 복사된 주문서를 메일(" + mailLink() + ")·카카오톡에 붙여넣기(Ctrl+V)하시면 그대로 전달됩니다.</p>"
+        : "<p>이메일 앱 또는 " + phoneLink() + "로 직접 연락 주세요. 위 주문서를 직접 선택해 복사(Ctrl+C)해 보내주시면 됩니다.</p>";
+      if (reason && typeof console === "object") console.warn("[주문서 접수 실패]", reason);
+      notice("", title, body, copied);
+      if (soHint) soHint.textContent = copied
+        ? "주문서가 클립보드에 복사되었습니다. 이메일·카카오톡에 붙여넣기 하세요."
+        : "위 주문서를 직접 선택해 복사(Ctrl+C)해 주세요.";
+    }
+
+    function sendOrder() {
+      if (sendBusy) return;
+      var chk = checkFields();
+      if (!chk.ok) {
+        if (soError) soError.hidden = false;
+        var target = chk.okName ? $("soPhone") : $("soName");
+        if (target) target.focus();
+        if (soHint) soHint.textContent = "성함과 연락처를 먼저 입력해 주세요.";
+        return;
+      }
+      if (soError) soError.hidden = true;
+
+      var payload = orderPayload();
+      var orderText = buildOrderText();
+      /* 접수 실패에 대비해 클릭 시점(사용자 제스처 안)에 미리 복사해 둔다. */
+      var copyPromise = copyToClipboard(orderText);
+
+      setSendBusy(true);
+      if (soBadge) soBadge.textContent = "접수 중";
+      notice("busy", "주문서를 보내는 중입니다...",
+        "<p>잠시만 기다려 주세요. 사장님 메일(" + mailLink() + ")로 주문서를 접수하고 있습니다.</p>", false);
+      if (soHint) soHint.textContent = "주문서를 접수하는 중입니다...";
+
+      var ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 15000) : null;
+      var clearTimer = function () { if (timer) { clearTimeout(timer); timer = null; } };
+
+      fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload),
+        signal: ctrl ? ctrl.signal : undefined
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { status: res.status, data: data || {} };
+        });
+      }).then(function (r) {
+        clearTimer();
+        setSendBusy(false);
+        if (String(r.data.success) === "true") {
+          notice("ok", "주문이 사장님께 접수되었습니다!",
+            "<p>재고 확인 후 " + phoneLink() + "로 연락드리겠습니다. 급하시면 매장으로 바로 전화 주셔도 됩니다.</p>", false);
+          if (soHint) soHint.textContent = "주문서가 메일로 접수되었습니다.";
+          if (soBadge) soBadge.textContent = "접수 완료";
+          track("self_quote_order_send", { build: badge, result: "ok" });
+          return;
+        }
+        var msg = r.data && (r.data.message || r.data.error) ? (r.data.message || r.data.error) : ("HTTP " + r.status);
+        throw new Error(msg);
+      }).catch(function (err) {
+        clearTimer();
+        setSendBusy(false);
+        var reason = String((err && err.message) || err || "network error");
+        var needActivation = /activat/i.test(reason);
+        if (soBadge) soBadge.textContent = "주문서 준비 완료";
+        track("self_quote_order_send", { build: badge, result: needActivation ? "activation" : "fail" });
+        copyPromise.then(function (copied) {
+          orderFallbackNotice(copied, reason);
+          if (needActivation) {
+            var extra = document.createElement("p");
+            extra.style.marginTop = "6px";
+            extra.innerHTML = "아직 FormSubmit 메일 인증 전입니다. 사장님 메일함(" + mailLink() + ")에서 'Activate Form' 메일을 눌러 인증하면 자동 접수가 시작됩니다.";
+            if (soSendNoticeBody) soSendNoticeBody.appendChild(extra);
+          }
+        });
+      });
+    }
+
+    if (soSend) {
+      soSend.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (!orderBuilt) {
+          if (soHint) soHint.textContent = "먼저 [주문서 만들기]를 눌러 주문서를 만들어 주세요.";
+          if ($("soName")) $("soName").focus();
+          return;
+        }
+        sendOrder();
+      });
+    }
+
+    if (soPcTip && !IS_MOBILE) soPcTip.hidden = false;
+
+    if (soSendNoticeAgain) {
+      soSendNoticeAgain.addEventListener("click", function () {
+        copyToClipboard(buildOrderText()).then(function (ok) {
+          if (soHint) soHint.textContent = ok
+            ? "주문서를 다시 복사했습니다. Ctrl+V로 붙여넣기 하세요."
+            : "복사가 막혀 있어요. 위 주문서를 직접 선택해 복사(Ctrl+C)해 주세요.";
+        });
+      });
+    }
+
     [[soSms, "sms"], [soMail, "mail"], [soCopy, "copy"]].forEach(function (pair) {
       var btn = pair[0];
       if (!btn) return;
@@ -1073,6 +1316,7 @@
           var done = function () { if (soHint) soHint.textContent = "주문서를 복사했습니다. 카카오톡·문자 어디든 붙여넣기 하세요."; };
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(done).catch(function () {
+              if (legacyCopy(text)) { done(); return; }
               if (soText) {
                 var range = document.createRange();
                 range.selectNodeContents(soText);
@@ -1082,6 +1326,8 @@
                 if (soHint) soHint.textContent = "선택된 내용을 Ctrl+C(모바일은 길게 눌러 복사)로 복사해 주세요.";
               }
             });
+          } else if (legacyCopy(text)) {
+            done();
           } else if (soHint) {
             soHint.textContent = "주문서 영역을 길게 눌러 직접 복사해 주세요.";
           }
@@ -1089,6 +1335,12 @@
           return;
         }
         track("self_quote_order_" + pair[1], { build: badge });
+        /* 모바일은 기존대로 문자·메일 앱이 바로 열린다. */
+        if (IS_MOBILE) return;
+        /* PC: 문자 앱이 없는 환경에서 "아무 반응 없음"이 되지 않도록 주문서를 복사하고 안내를 띄운다. */
+        var orderText = buildOrderText();
+        if (pair[1] === "sms") e.preventDefault();
+        copyToClipboard(orderText).then(function (ok) { showSendNotice(pair[1], ok); });
       });
     });
 
