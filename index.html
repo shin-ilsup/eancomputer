@@ -615,7 +615,7 @@
           </div>
           <p class="sq-picker-note">
             <strong>CPU를 바꾸면 메인보드·메모리 호환을 자동으로 맞춰 드립니다.</strong>
-            표시가는 부품 시세 기준(2026-11-23 조회)이며, 재고·시세에 따라 달라질 수 있습니다.
+            표시가는 부품 시세 기준(2026-11-24 조회)이며, 재고·시세에 따라 달라질 수 있습니다.
             카드 · 인천e음(지역화폐) · 온누리상품권 · 네이버페이 · 카카오페이로 결제하실 수 있습니다.
           </p>
         </div>
@@ -735,61 +735,103 @@
       cpu: [
         { id: "i3-14100", name: "인텔 코어 i3-14100 (쿨러 포함)", spec: "4코어 · 내장그래픽 UHD 730 · 사무·인강", price: 233000, socket: "LGA1700", igpu: true, cooler: true, tag: "실속" },
         { id: "i5-14400", name: "인텔 코어 i5-14400 (쿨러 포함)", spec: "10코어 · 내장그래픽 UHD 730 · 사무·멀티태스킹", price: 246000, socket: "LGA1700", igpu: true, cooler: true, tag: "인기" },
+        { id: "u5-225", name: "인텔 코어 Ultra 5 225 (쿨러 포함)", spec: "10코어 · 최신 15세대 · 내장그래픽 Xe", price: 290000, socket: "LGA1851", igpu: true, cooler: true, tag: "신형" },
         { id: "r5-7500f", name: "AMD 라이젠5 7500F", spec: "6코어 · 게이밍 가성비 · 내장그래픽 없음 · 쿨러 별도", price: 190000, socket: "AM5", igpu: false, cooler: false, tag: "게이밍" },
         { id: "r5-9600x", name: "AMD 라이젠5 9600X (쿨러 포함)", spec: "6코어 · 최신 세대 · 게이밍·작업 균형", price: 295000, socket: "AM5", igpu: true, cooler: true },
+        { id: "r5-8600g", name: "AMD 라이젠5 8600G PRO (쿨러 포함)", spec: "6코어 · 내장그래픽 강함 · 사무·영상", price: 300000, socket: "AM5", igpu: true, cooler: true, tag: "내장그래픽" },
         { id: "r7-9700x", name: "AMD 라이젠7 9700X (쿨러 포함)", spec: "8코어 · 영상편집·멀티태스킹", price: 353000, socket: "AM5", igpu: true, cooler: true, tag: "작업" },
         { id: "r7-7800x3d", name: "AMD 라이젠7 7800X3D", spec: "8코어 3D V캐시 · 게이밍 최강 · 쿨러 별도", price: 395000, socket: "AM5", igpu: true, cooler: false, tag: "게이밍" },
+        { id: "i7-14700", name: "인텔 코어 i7-14700 (쿨러 포함)", spec: "20코어 · 영상편집·작업 다용도", price: 560000, socket: "LGA1700", igpu: true, cooler: true, tag: "작업" },
         { id: "r7-9800x3d", name: "AMD 라이젠7 9800X3D", spec: "8코어 최신 3D V캐시 · 4K 게이밍 · 쿨러 별도", price: 591000, socket: "AM5", igpu: true, cooler: false, tag: "하이엔드" }
       ],
       cooler: [
         { id: "stock", name: "CPU 기본 쿨러 사용", spec: "쿨러가 포함된 CPU를 고르셨을 때 선택", price: 0, needsCooler: true },
+        { id: "ag400", name: "DEEPCOOL AG400 G2", spec: "싱글타워 공랭 · 사무·게임용 무난", price: 30000 },
+        { id: "cv620", name: "오쓰 CV-620", spec: "듀얼타워 공랭 · 6히트파이프 가성비", price: 46000 },
+        { id: "ag620", name: "DEEPCOOL AG620 G2", spec: "듀얼타워 공랭 · 듀얼팬", price: 48000 },
         { id: "a620", name: "ID-COOLING FROZN A620 PRO SE", spec: "듀얼타워 공랭 · 조용하고 시원하게", price: 49000 },
-        { id: "nautilus", name: "CORSAIR NAUTILUS 360 RS", spec: "3열 수랭 · 고사양 CPU용 · 5년 보증", price: 148000 }
+        { id: "p360", name: "ABKO P360 포세이돈 ARGB", spec: "3열 수랭 · RGB 팬 · 가성비 수랭", price: 70000 },
+        { id: "rc1900", name: "3RSYS Socoool RC1900 ARGB", spec: "듀얼타워 공랭 · 솔더링 쌍철봉", price: 98000 },
+        { id: "ld360", name: "DEEPCOOL LD360", spec: "3열 수랭 · 고성능 CPU용", price: 139000 },
+        { id: "nautilus", name: "CORSAIR NAUTILUS 360 RS", spec: "3열 수랭 · 고사양 CPU용 · 5년 보증", price: 148000 },
+        { id: "kraken", name: "NZXT KRAKEN PLUS 360", spec: "3열 수랭 · 저소음 · 6년 보증", price: 275000 }
       ],
       mb: [
         { id: "h610k", name: "GIGABYTE H610M K D4", spec: "LGA1700 · DDR4 · 실속형", price: 99000, socket: "LGA1700", mem: "DDR4" },
+        { id: "msi-h610m", name: "MSI PRO H610M-E DDR4", spec: "LGA1700 · DDR4 · HDMI 단자", price: 124000, socket: "LGA1700", mem: "DDR4" },
         { id: "h610s2h", name: "GIGABYTE H610M S2H V2 D4", spec: "LGA1700 · DDR4 · HDMI·DP 단자", price: 145000, socket: "LGA1700", mem: "DDR4" },
+        { id: "h810m", name: "ASUS PRIME H810M-K", spec: "LGA1851 · DDR5 · 최신 15세대용", price: 154000, socket: "LGA1851", mem: "DDR5" },
+        { id: "b760ds3h", name: "GIGABYTE B760M DS3H D4", spec: "LGA1700 · DDR4 · M.2 2개", price: 161000, socket: "LGA1700", mem: "DDR4" },
         { id: "b760ax", name: "Colorful BATTLE-AX B760M-PLUS V20 D5", spec: "LGA1700 · DDR5 · M.2 2개", price: 165000, socket: "LGA1700", mem: "DDR5" },
         { id: "b760rs", name: "ASRock B760M Pro RS D5", spec: "LGA1700 · DDR5 · 확장성 좋은 인기 보드", price: 185000, socket: "LGA1700", mem: "DDR5" },
+        { id: "b860m", name: "GIGABYTE B860M AORUS ELITE", spec: "LGA1851 · DDR5 · 최신 15세대 고급형", price: 255000, socket: "LGA1851", mem: "DDR5" },
         { id: "b650pg", name: "ASRock B650M PG Lightning", spec: "AM5 · DDR5 · 실속 AM5 보드", price: 143000, socket: "AM5", mem: "DDR5" },
-        { id: "b650k", name: "GIGABYTE B650M K", spec: "AM5 · DDR5 · M.2 2개 · 인기", price: 158000, socket: "AM5", mem: "DDR5" }
+        { id: "b650k", name: "GIGABYTE B650M K", spec: "AM5 · DDR5 · M.2 2개 · 인기", price: 158000, socket: "AM5", mem: "DDR5" },
+        { id: "b850force", name: "ASRock B850M FORCE V2", spec: "AM5 · DDR5 · 최신 B850 칩셋", price: 179000, socket: "AM5", mem: "DDR5" }
       ],
       ram: [
-        { id: "ddr4-16", name: "삼성 DDR4 16GB (PC4-25600)", spec: "3200MHz · DDR4 보드 전용", price: 335000, mem: "DDR4" },
+        { id: "ddr4-8k", name: "킹덤 DDR4 8GB (PC4-25600)", spec: "3200MHz · 사무용 최저가 구성 · DDR4 보드 전용", price: 104000, mem: "DDR4" },
+        { id: "ddr4-8", name: "삼성 DDR4 8GB (PC4-25600)", spec: "3200MHz · 사무·인강 실속 구성 · DDR4 보드 전용", price: 170000, mem: "DDR4" },
+        { id: "ddr4-16t", name: "타무즈 DDR4 16GB (PC4-25600)", spec: "3200MHz · 가성비 16GB · DDR4 보드 전용", price: 188000, mem: "DDR4" },
+        /* base: 메인보드 교체로 메모리를 자동 변경할 때 기본으로 잡는 모델 */
+        { id: "ddr4-16", name: "삼성 DDR4 16GB (PC4-25600)", spec: "3200MHz · DDR4 보드 전용", price: 335000, mem: "DDR4", base: true },
         { id: "ddr5-16", name: "커널앤코어 DDR5 16GB (5600)", spec: "5600MHz · DDR5 보드 전용", price: 370000, mem: "DDR5" },
+        { id: "ddr5-16k", name: "KLEVV DDR5 16GB (5600)", spec: "5600MHz · DDR5 보드 전용", price: 385000, mem: "DDR5" },
         { id: "ddr5-16p", name: "PATRIOT DDR5 16GB (5600)", spec: "5600MHz · DDR5 보드 전용", price: 405000, mem: "DDR5" },
+        { id: "ddr5-16s", name: "삼성 DDR5 16GB (5600)", spec: "5600MHz · 삼성 정품 · DDR5 보드 전용", price: 441000, mem: "DDR5" },
         { id: "ddr5-32a", name: "AGI DDR5 32GB (16GB×2)", spec: "5600MHz · 듀얼채널 · 게임·작업 여유", price: 753000, mem: "DDR5" },
+        { id: "ddr5-32k", name: "KLEVV DDR5 32GB (16GB×2)", spec: "6000MHz · CL30 · 듀얼채널 고성능", price: 849000, mem: "DDR5" },
         { id: "ddr5-32h", name: "SK hynix DDR5 32GB (16GB×2)", spec: "5600MHz · 정품 모듈", price: 970000, mem: "DDR5" }
       ],
       gpu: [
         { id: "none", name: "내장그래픽 사용 (그래픽카드 없음)", spec: "사무·인터넷·영상 시청 · 내장그래픽 있는 CPU만", price: 0, kind: "igpu", watt: 0, tier: 0 },
+        { id: "rtx3050", name: "GIGABYTE 지포스 RTX 3050 6GB", spec: "사무·간단한 게임 · 가장 저렴한 외장", price: 434000, watt: 450, tier: 1 },
+        { id: "rtx5050", name: "GIGABYTE 지포스 RTX 5050 8GB", spec: "FHD 게임 입문 · 최신 세대", price: 620000, watt: 550, tier: 2 },
         { id: "rtx5060", name: "MSI 지포스 RTX 5060 벤투스 2X 8GB", spec: "FHD 게임 60~144Hz", price: 749000, watt: 550, tier: 3 },
         { id: "rtx5060ti8", name: "MSI 지포스 RTX 5060 Ti 벤투스 2X 8GB", spec: "FHD 고주사율 · QHD 입문", price: 834000, watt: 600, tier: 3 },
+        { id: "rx9060xt", name: "PowerColor 라데온 RX 9060 XT 16GB", spec: "QHD 게임 · 16GB 메모리", price: 954000, watt: 600, tier: 4 },
+        { id: "rx9070", name: "ASRock 라데온 RX 9070 16GB", spec: "QHD 고주사율 · 작업 겸용", price: 1134000, watt: 700, tier: 4 },
         { id: "rtx5060ti16", name: "Colorful 지포스 RTX 5060 Ti 16GB", spec: "QHD 게임 · 영상편집 입문", price: 1279000, watt: 650, tier: 4 },
         { id: "rtx5070", name: "MSI 지포스 RTX 5070 벤투스 3X 12GB", spec: "QHD 고주사율 · 작업 겸용", price: 1434000, watt: 700, tier: 4 },
         { id: "rtx5070ti", name: "Colorful 지포스 RTX 5070 Ti 16GB", spec: "QHD·4K 고사양 게임", price: 1934000, watt: 750, tier: 5 },
-        { id: "rtx5070ti3", name: "MSI 지포스 RTX 5070 Ti 게이밍 트리오 16GB", spec: "4K · 스트리밍 · 고성능", price: 2324000, watt: 800, tier: 5 }
+        { id: "rtx5080", name: "GIGABYTE 지포스 RTX 5080 16GB", spec: "4K 최고사양 게임 · 스트리밍", price: 3679000, watt: 850, tier: 6 }
       ],
       ssd: [
         { id: "nv512", name: "Biwin Black Opal NV3500 512GB", spec: "NVMe · 문서·인강용 실속", price: 152000 },
+        { id: "p300-512", name: "마이크론 Crucial P300 512GB", spec: "NVMe · 가성비 512GB", price: 158000 },
+        { id: "exg3-1t", name: "키오시아 EXCERIA PLUS G3 1TB", spec: "NVMe PCIe4.0 · 가성비 1TB", price: 278000 },
         { id: "nv3-1t", name: "Kingston NV3 1TB", spec: "NVMe PCIe4.0 · 가장 무난한 1TB", price: 329000 },
         { id: "s990-1t", name: "삼성 990 1TB", spec: "NVMe · 삼성 정품 1TB", price: 339000 },
+        { id: "c930-1t", name: "KLEVV CRAS C930 1TB", spec: "NVMe PCIe4.0 · 방열판 포함", price: 415000 },
+        { id: "exg3-2t", name: "키오시아 EXCERIA PLUS G3 2TB", spec: "NVMe PCIe4.0 · 대용량 2TB", price: 475000 },
         { id: "s990pro-1t", name: "삼성 990 PRO 1TB", spec: "NVMe · 고성능 1TB", price: 525000 },
         { id: "p41-1t", name: "SK hynix Platinum P41 1TB", spec: "NVMe · 고성능 1TB", price: 541000 },
-        { id: "nv3-2t", name: "Kingston NV3 2TB", spec: "NVMe · 대용량 2TB", price: 585000 }
+        { id: "nv3-2t", name: "Kingston NV3 2TB", spec: "NVMe · 대용량 2TB", price: 585000 },
+        { id: "p41-2t", name: "SK hynix Platinum P41 2TB", spec: "NVMe · 최고급 2TB", price: 782000 }
       ],
       psu: [
+        { id: "a600dn", name: "MSI MAG A600DN 600W 80PLUS STANDARD", spec: "600W · 사무·실속 구성", price: 56000, watt: 600 },
         { id: "sunroot", name: "썬루트 PN 700W 80PLUS BRONZE ATX3.1", spec: "700W · 사무·가성비 구성", price: 65000, watt: 700 },
         { id: "aone", name: "AONE STORM 80PLUS BRONZE 700W", spec: "700W · 실속형", price: 71000, watt: 700 },
         { id: "excel700", name: "에너지옵티머스 EXCEL CLASSIC 700W", spec: "700W · 80PLUS BRONZE · 인기", price: 74000, watt: 700 },
         { id: "topower", name: "Topower Guardian TOP-700DG 700W", spec: "700W · 정격", price: 77000, watt: 700 },
-        { id: "msi850", name: "MSI MAG A850GN 80PLUS GOLD 850W", spec: "850W · ATX3.1 · 고성능 그래픽카드용", price: 123000, watt: 850 }
+        { id: "a750bn", name: "MSI MAG A750BN III 80PLUS BRONZE 750W", spec: "750W · ATX3.1 · 그래픽카드 여유", price: 105000, watt: 750 },
+        { id: "msi850", name: "MSI MAG A850GN 80PLUS GOLD 850W", spec: "850W · ATX3.1 · 고성능 그래픽카드용", price: 123000, watt: 850 },
+        { id: "classic850", name: "마이크로닉스 Classic II 850W 80PLUS GOLD", spec: "850W · 풀모듈러 · 국민 파워", price: 168000, watt: 850 },
+        { id: "sf1000", name: "SuperFlower LEADEX III GOLD 1000W", spec: "1000W · 80PLUS GOLD · 고사양용", price: 215000, watt: 1000 },
+        { id: "sf850", name: "SuperFlower LEADEX VII GOLD 850W", spec: "850W · 80PLUS GOLD · 플래그십", price: 225000, watt: 850 }
       ],
       "case": [
+        { id: "r120", name: "3RSYS R120 미니타워", spec: "M-ATX · 초저가 실속", price: 46000, small: true },
         { id: "glory", name: "마이크로닉스 Glory 미니타워", spec: "M-ATX · 사무·가정용 콤팩트", price: 48000, small: true },
+        { id: "s100", name: "마이크로닉스 HATCH S100 미니타워", spec: "M-ATX · 깔끔한 디자인", price: 58000, small: true },
         { id: "r190", name: "3RSYS R190 미들타워", spec: "강화유리 · 무난한 실속형", price: 59000, small: true },
         { id: "r260", name: "3RSYS R260 미들타워", spec: "메쉬 전면 · 팬 6개 · 통풍 좋음", price: 62000 },
+        { id: "r700", name: "3RSYS R700 에어 세븐 미들타워", spec: "메쉬 · 팬 7개 · 통풍 최강", price: 63000 },
         { id: "r530", name: "3RSYS R530 미들타워", spec: "VGA 400mm · 대형 그래픽카드 대응", price: 75000 },
+        { id: "ud50", name: "앱코 UD50 블루웨일 ARGB BTF", spec: "미들타워 · ARGB 팬 · 선정리 편함", price: 87000 },
+        { id: "r640", name: "3RSYS R640 Quiet 미들타워", spec: "저소음 · 강화유리 · 고급형", price: 119000 },
+        { id: "c6curve", name: "darkFlash C6 CURVE AIR MESH BTF", spec: "미들타워 · 어항형 · 메쉬", price: 152000 },
         { id: "t300", name: "3RSYS T300 Quiet BTF", spec: "측면 360 수랭 장착 · 저소음", price: 175000 }
       ]
     };
@@ -850,7 +892,8 @@
 
       var ram = byId("ram", state.ram);
       if (ram.mem !== mb.mem) {
-        var nram = PARTS.ram.filter(function (p) { return p.mem === mb.mem; })[0];
+        var ramCands = PARTS.ram.filter(function (p) { return p.mem === mb.mem; });
+        var nram = ramCands.filter(function (p) { return p.base; })[0] || ramCands[0];
         if (nram) {
           state.ram = nram.id;
           notes.push("메인보드(" + mb.mem + ")에 맞춰 메모리를 바꿨습니다: " + nram.name);
